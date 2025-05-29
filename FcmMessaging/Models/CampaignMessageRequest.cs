@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using FcmMessaging.Commons.Mappings;
+using FcmMessaging.Infrastructure.Persistence.Entities;
 using Swashbuckle.AspNetCore.Annotations;
 using Utilities.Attributes;
 
 namespace FcmMessaging.Models;
 
-public class CampaignMessageRequest
+public class CampaignMessageRequest : IMapFrom<Message>
 {
     [Required]
     [SwaggerSchema(Description = "Message Title")]
