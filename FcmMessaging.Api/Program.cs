@@ -34,11 +34,18 @@ app.MapDefaultEndpoints();
 //     app.UseSwaggerUI();
 // }
 
-
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+app.UseCors(opt =>
+{
+    opt.AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+        .WithOrigins("http://localhost:3000", "https://localhost:3000");
+});
 
 app.UseAuthorization();
 
