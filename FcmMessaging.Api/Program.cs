@@ -15,7 +15,7 @@ builder.AddAutoMapper()
     .ConfigureSwaggerGen()
     .InitiateFirebase()
     .RegisterServices()
-    .AddSqlDependency();
+    .AddSqliteDependency();
 
 var app = builder.Build();
 
