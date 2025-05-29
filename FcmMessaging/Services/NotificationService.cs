@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using FcmMessaging.Infrastructure.Models;
+using FcmMessaging.Infrastructure.Persistence.Entities;
 using FcmMessaging.Infrastructure.Persistence.Sql;
 using FcmMessaging.Infrastructure.Service;
 using FcmMessaging.Interfaces;
 using FcmMessaging.Models;
 using FcmMessaging.Models.Dto;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Utilities.Models;
@@ -31,10 +33,12 @@ public class NotificationService : INotificationService
 
     public async Task<ResponseResult<List<MessageDto>>> GetAllCampaignMessages()
     {
-        var messages = await _context.Messages.Where(x => x.UserId != null)
-            .ProjectTo<MessageDto>(_mapper.ConfigurationProvider).ToListAsync();
+        var messages = await _context.Messages
+            .ToListAsync();
 
-        return ResponseResult<List<MessageDto>>.Success(messages);
+        var dto = _mapper.Map<List<MessageDto>>(messages);
+        
+        return ResponseResult<List<MessageDto>>.Success(dto);
     }
 
     public async Task<ResponseResult<MessageDto>> GetCampaignMessage(Guid id)
@@ -86,7 +90,15 @@ public class NotificationService : INotificationService
                 });
             }
         }
-        throw new NotImplementedException();
+        var message = _mapper.Map<Message>(request);
+        
+        await _context.Messages.AddAsync(message);
+        
+        var result = await _context.SaveChangesAsync();
+        
+        var dto = _mapper.Map<MessageDto>(message);
+        
+        return ResponseResult<MessageDto>.Success("Campaign Message sent", dto, statusCode:StatusCodes.Status201Created);
     }
 
     public async Task<ResponseResult<MessageDto>> SendTargetMessageAsync(TargetMessageRequest request)
@@ -97,7 +109,6 @@ public class NotificationService : INotificationService
 
         if (!user.Devices.Any())
             return ResponseResult<MessageDto>.Failure("No devices found");
-
 
         var response = await _fcmMessageService.SendPushNotification(new PushRequest()
         {

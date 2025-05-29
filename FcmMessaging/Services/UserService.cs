@@ -57,7 +57,7 @@ public class UserService : IUserService
         
         await _context.Users.AddAsync(user);
         
-        await _context.SaveChangesAsync();
+        var result = await _context.SaveChangesAsync();
         
         var dto = _mapper.Map<UserDto>(user);
         
