@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "cKUOGzcwiZEhjndp8vVaHcWNkpghfmjBm6kXKKCNj8Q=",
+  "Source": "FcmMessaging.Api",
+  "BasePath": "_content/FcmMessaging.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
