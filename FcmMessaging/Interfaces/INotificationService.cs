@@ -23,4 +23,12 @@ public interface INotificationService
     /// <param name="request"></param>
     /// <returns></returns>
     Task<ResponseResult<MessageDto>> SendTargetMessageAsync(TargetMessageRequest request);
+    
+    
+    /// <summary>
+    /// Send message to an individual
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    Task<ResponseResult<MessageDto>> SendTargetExpoMessageAsync(ExpoTargetMessageRequest request);
 }

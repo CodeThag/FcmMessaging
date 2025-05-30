@@ -24,7 +24,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FcmMessaging.AppHost")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fe7bba7b1d34b70e88950ca35cb57bb94db55305")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ae91607497442ddc73c3b1094b3d3d67ee4bbdaf")]
 [assembly: System.Reflection.AssemblyProductAttribute("FcmMessaging.AppHost")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FcmMessaging.AppHost")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

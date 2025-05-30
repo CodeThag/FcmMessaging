@@ -63,6 +63,18 @@
           }
         }
       },
+      "Expo.Server.SDK/1.0.2": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "12.0.3"
+        },
+        "compile": {
+          "lib/netcoreapp2.2/Expo.Server.SDK.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp2.2/Expo.Server.SDK.dll": {}
+        }
+      },
       "FirebaseAdmin/3.2.0": {
         "type": "package",
         "dependencies": {
@@ -2753,6 +2765,20 @@
         "azureicon.png",
         "lib/netstandard2.0/Azure.Identity.dll",
         "lib/netstandard2.0/Azure.Identity.xml"
+      ]
+    },
+    "Expo.Server.SDK/1.0.2": {
+      "sha512": "Dp1zvR2w5Mh9gdxXhYXVELaDjcXVPF5BmuvwjbzxBXAzqJyx0utdyPUcaCEH9CNjchG7zXcDQZ/Ox4DPObK8dQ==",
+      "type": "package",
+      "path": "expo.server.sdk/1.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "expo.server.sdk.1.0.2.nupkg.sha512",
+        "expo.server.sdk.nuspec",
+        "lib/netcoreapp2.2/Expo.Server.SDK.dll",
+        "lib/netstandard2.0/Expo.Server.SDK.dll"
       ]
     },
     "FirebaseAdmin/3.2.0": {
@@ -6655,6 +6681,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "Expo.Server.SDK >= 1.0.2",
       "FcmMessaging.ServiceDefaults >= 1.0.0",
       "FirebaseAdmin >= 3.2.0",
       "Microsoft.EntityFrameworkCore.Design >= 8.0.16",
@@ -6722,6 +6749,10 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "Expo.Server.SDK": {
+            "target": "Package",
+            "version": "[1.0.2, )"
+          },
           "FirebaseAdmin": {
             "target": "Package",
             "version": "[3.2.0, )"

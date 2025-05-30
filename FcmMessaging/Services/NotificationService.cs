@@ -20,14 +20,16 @@ public class NotificationService : INotificationService
     private readonly ApplicationDbContext _context;
     private readonly IFcmMessageService _fcmMessageService;
     private readonly IMapper _mapper;
+    private readonly IExpoSerivce _expoService;
 
     public NotificationService(ILogger<INotificationService> logger, ApplicationDbContext context,
-        IFcmMessageService fcmMessageService, IMapper mapper)
+        IFcmMessageService fcmMessageService, IMapper mapper, IExpoSerivce expoService)
     {
         _logger = logger;
         _context = context;
         _fcmMessageService = fcmMessageService;
         _mapper = mapper;
+        _expoService = expoService;
     }
 
 
@@ -37,7 +39,7 @@ public class NotificationService : INotificationService
             .ToListAsync();
 
         var dto = _mapper.Map<List<MessageDto>>(messages);
-        
+
         return ResponseResult<List<MessageDto>>.Success(dto);
     }
 
@@ -46,10 +48,10 @@ public class NotificationService : INotificationService
         var message = await _context.Messages.Where(x => x.Id == id)
             .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
-        
-        if(message == null)
+
+        if (message == null)
             ResponseResult<MessageDto>.Failure("Message not found");
-        
+
         return ResponseResult<MessageDto>.Success(message);
     }
 
@@ -66,39 +68,37 @@ public class NotificationService : INotificationService
         var message = await _context.Messages.Where(x => x.Id == id && x.UserId == messageId)
             .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
-        
-        if(message == null)
+
+        if (message == null)
             ResponseResult<MessageDto>.Failure("Message not found");
-        
+
         return ResponseResult<MessageDto>.Success(message);
     }
 
     public async Task<ResponseResult<MessageDto>> SendCampaignMessageAsync(CampaignMessageRequest request)
     {
         var users = await _context.Users.Include(x => x.Devices).ToListAsync();
+        var tokens = new List<string>();
         foreach (var user in users)
+            tokens = user.Devices.Select(x => x.Token).ToList();
+
+        var response = await _expoService.SendToken(new ExpoPushRequest()
         {
-            var devices = user.Devices.ToList();
-            foreach (var device in devices)
-            {
-                var response = await _fcmMessageService.SendPushNotification(new PushRequest()
-                {
-                    Token = device.Token,
-                    Title = request.Title,
-                    Body = request.Body,
-                    ImageUrl = request.ImageUrl
-                });
-            }
-        }
+            Tokens = tokens,
+            Body = request.Body,
+            Title = request.Title,
+            ImageUrl = request.ImageUrl
+        });
+
         var message = _mapper.Map<Message>(request);
-        
+
         await _context.Messages.AddAsync(message);
-        
+
         var result = await _context.SaveChangesAsync();
-        
+
         var dto = _mapper.Map<MessageDto>(message);
-        
-        return ResponseResult<MessageDto>.Success("Campaign Message sent", dto, statusCode:StatusCodes.Status201Created);
+
+        return ResponseResult<MessageDto>.Success(response, dto, statusCode: StatusCodes.Status201Created);
     }
 
     public async Task<ResponseResult<MessageDto>> SendTargetMessageAsync(TargetMessageRequest request)
@@ -110,14 +110,29 @@ public class NotificationService : INotificationService
         if (!user.Devices.Any())
             return ResponseResult<MessageDto>.Failure("No devices found");
 
-        var response = await _fcmMessageService.SendPushNotification(new PushRequest()
+        var tokens = user.Devices.Select(x => x.Token).ToList();
+
+        var response = await _expoService.SendToken(new ExpoPushRequest()
         {
-            Token = user.Devices.FirstOrDefault()
-                .Token, //TODO: Change this implementation to capture all users token as a list. Incase he has multiple devices active
-            Title = request.Title,
+            Tokens = tokens,
             Body = request.Body,
+            Title = request.Title,
+            ImageUrl = request.ImageUrl
         });
 
-        return ResponseResult<MessageDto>.Success("message sent");
+        return ResponseResult<MessageDto>.Success(response);
+    }
+
+    public async Task<ResponseResult<MessageDto>> SendTargetExpoMessageAsync(ExpoTargetMessageRequest request)
+    {
+        var response = await _expoService.SendToken(new ExpoPushRequest()
+        {
+            Tokens = new List<string>() { request.Token },
+            Body = request.Body,
+            Title = request.Title,
+            ImageUrl = request.ImageUrl
+        });
+
+        return ResponseResult<MessageDto>.Success(response);
     }
 }

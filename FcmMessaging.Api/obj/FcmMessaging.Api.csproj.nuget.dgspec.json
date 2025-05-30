@@ -139,6 +139,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Expo.Server.SDK": {
+              "target": "Package",
+              "version": "[1.0.2, )"
+            },
             "FirebaseAdmin": {
               "target": "Package",
               "version": "[3.2.0, )"

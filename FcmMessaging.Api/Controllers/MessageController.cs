@@ -17,6 +17,15 @@ public class MessageController : BaseController
         _logger = logger;
         _notificationService = notificationService;
     }
+    
+    
+    [HttpPost("SendTargetMessageByToken")]
+    public async Task<ActionResult<ResponseResult<MessageDto>>> SendTargetMessageByToken(ExpoTargetMessageRequest request)
+    {
+        var response = await _notificationService.SendTargetExpoMessageAsync(request);
+
+        return ActionResultHelper.MapResponseByStatusCode(response);
+    }
 
     [HttpPost("SendTargetMessage")]
     public async Task<ActionResult<ResponseResult<MessageDto>>> SendTargetMessage(TargetMessageRequest request)
