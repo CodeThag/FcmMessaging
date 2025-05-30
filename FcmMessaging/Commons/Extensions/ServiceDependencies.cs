@@ -64,6 +64,7 @@ public static class ServiceDependencies
         builder.Services.AddTransient<IUserService, UserService>();
         builder.Services.AddTransient<IFcmMessageService, FcmMessageService>();
         builder.Services.AddTransient<INotificationService, NotificationService>();
+        builder.Services.AddTransient<IExpoSerivce, ExpoService>();
         
         return builder;
     }
